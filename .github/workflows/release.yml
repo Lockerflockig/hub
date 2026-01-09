@@ -62,7 +62,7 @@ jobs:
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          files: hg_hub-${{ github.ref_name }}-linux-x64.tar.gz
+          files: hub-${{ github.ref_name }}-linux-x64.tar.gz
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
