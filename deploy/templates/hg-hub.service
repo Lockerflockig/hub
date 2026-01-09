@@ -1,28 +1,28 @@
 [Unit]
-Description=HG Hub - Alliance Hub for pr0game
+Description= Hub - Alliance Hub for pr0game
 After=network.target
 
 [Service]
 Type=simple
-User=hghub
-Group=hghub
-WorkingDirectory=/opt/hg_hub
-ExecStart=/opt/hg_hub/bin/hg_hub
+User=hub
+Group=hub
+WorkingDirectory=/opt/hub
+ExecStart=/opt/hub/bin/hub
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=hg-hub
+SyslogIdentifier=hub
 
 # Environment
-EnvironmentFile=/opt/hg_hub/.env
+EnvironmentFile=/opt/hub/.env
 
 # Security hardening
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/hg_hub/data /opt/hg_hub/logs
+ReadWritePaths=/opt/hub/data /opt/hub/logs
 
 [Install]
 WantedBy=multi-user.target

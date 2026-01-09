@@ -2,7 +2,7 @@
 set -e
 
 # ============================================================================
-# HG Hub Update Script
+# Hub Update Script
 # ============================================================================
 
 # Colors
@@ -12,9 +12,9 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-INSTALL_DIR="/opt/hg_hub"
-SERVICE_NAME="hg-hub"
-GITHUB_REPO="Lockerflockig/hg_hub"
+INSTALL_DIR="/opt/hub"
+SERVICE_NAME="hub"
+GITHUB_REPO="Lockerflockig/hub"
 BACKUP_DIR="$INSTALL_DIR/backups"
 
 print_header() {
@@ -112,7 +112,7 @@ create_backup() {
     print_success ".env backed up"
 
     # Backup current binary
-    cp "$INSTALL_DIR/bin/hg_hub" "$BACKUP_PATH/"
+    cp "$INSTALL_DIR/bin/hub" "$BACKUP_PATH/"
     print_success "Binary backed up"
 
     # Store current version
@@ -139,11 +139,11 @@ download_and_update() {
 
     if [ -n "$ASSET_ID" ] && [ -n "$AUTH_HEADER" ]; then
         ASSET_URL="https://api.github.com/repos/${GITHUB_REPO}/releases/assets/${ASSET_ID}"
-        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$ASSET_URL" -o /tmp/hg_hub_update.tar.gz
+        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$ASSET_URL" -o /tmp/hub_update.tar.gz
     elif [ -n "$AUTH_HEADER" ]; then
-        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$DOWNLOAD_URL" -o /tmp/hg_hub_update.tar.gz
+        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$DOWNLOAD_URL" -o /tmp/hub_update.tar.gz
     else
-        curl -L "$DOWNLOAD_URL" -o /tmp/hg_hub_update.tar.gz
+        curl -L "$DOWNLOAD_URL" -o /tmp/hub_update.tar.gz
     fi
 
     # Stop service
@@ -152,25 +152,25 @@ download_and_update() {
 
     # Extract to temp
     print_info "Extracting..."
-    mkdir -p /tmp/hg_hub_update
-    tar -xzf /tmp/hg_hub_update.tar.gz -C /tmp/hg_hub_update
+    mkdir -p /tmp/hub_update
+    tar -xzf /tmp/hub_update.tar.gz -C /tmp/hub_update
 
     # Update main binary (includes integrated Discord bot)
-    mv /tmp/hg_hub_update/hg_hub "$INSTALL_DIR/bin/"
-    chmod +x "$INSTALL_DIR/bin/hg_hub"
-    chown hghub:hghub "$INSTALL_DIR/bin/hg_hub"
+    mv /tmp/hub_update/hub "$INSTALL_DIR/bin/"
+    chmod +x "$INSTALL_DIR/bin/hub"
+    chown hub:hub "$INSTALL_DIR/bin/hub"
     print_success "Binary updated"
 
     # Update static files
-    cp -r /tmp/hg_hub_update/static/* "$INSTALL_DIR/static/"
-    chown -R hghub:hghub "$INSTALL_DIR/static"
+    cp -r /tmp/hub_update/static/* "$INSTALL_DIR/static/"
+    chown -R hub:hub "$INSTALL_DIR/static"
     print_success "Static files updated"
 
     # Update version
     echo "$LATEST_VERSION" > "$INSTALL_DIR/version.txt"
 
     # Cleanup
-    rm -rf /tmp/hg_hub_update /tmp/hg_hub_update.tar.gz
+    rm -rf /tmp/hub_update /tmp/hub_update.tar.gz
 
     print_success "Files updated"
 }
@@ -216,12 +216,12 @@ rollback() {
     systemctl stop "$SERVICE_NAME" 2>/dev/null || true
 
     # Restore files
-    cp "$LATEST_BACKUP/hg_hub" "$INSTALL_DIR/bin/"
+    cp "$LATEST_BACKUP/hub" "$INSTALL_DIR/bin/"
     cp "$LATEST_BACKUP/hub.db" "$INSTALL_DIR/data/"
     cp "$LATEST_BACKUP/version.txt" "$INSTALL_DIR/"
 
-    chown hghub:hghub "$INSTALL_DIR/bin/hg_hub"
-    chown hghub:hghub "$INSTALL_DIR/data/hub.db"
+    chown hub:hub "$INSTALL_DIR/bin/hub"
+    chown hub:hub "$INSTALL_DIR/data/hub.db"
 
     # Start service
     systemctl start "$SERVICE_NAME"
@@ -241,8 +241,8 @@ main() {
     fi
 
     # Check if installed
-    if [ ! -f "$INSTALL_DIR/bin/hg_hub" ]; then
-        print_error "HG Hub is not installed. Run install.sh first."
+    if [ ! -f "$INSTALL_DIR/bin/hub" ]; then
+        print_error "Hub is not installed. Run install.sh first."
         exit 1
     fi
 

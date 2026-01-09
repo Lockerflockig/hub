@@ -2,7 +2,7 @@
 set -e
 
 # ============================================================================
-# HG Hub Installer
+# Hub Installer
 # ============================================================================
 
 # Get script directory (for local installs)
@@ -15,9 +15,9 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-INSTALL_DIR="/opt/hg_hub"
-SERVICE_NAME="hg-hub"
-GITHUB_REPO="Lockerflockig/hg_hub"
+INSTALL_DIR="/opt/hub"
+SERVICE_NAME="hub"
+GITHUB_REPO="Lockerflockig/hub"
 
 # Track installation progress for cleanup
 INSTALL_STARTED=false
@@ -71,8 +71,8 @@ cleanup() {
 
             # Remove nginx config
             if [ "$NGINX_CONFIGURED" = true ]; then
-                rm -f "/etc/nginx/sites-enabled/hg-hub"
-                rm -f "/etc/nginx/sites-available/hg-hub"
+                rm -f "/etc/nginx/sites-enabled/hub"
+                rm -f "/etc/nginx/sites-available/hub"
                 systemctl reload nginx 2>/dev/null || true
             fi
 
@@ -83,11 +83,11 @@ cleanup() {
 
             # Remove user
             if [ "$USER_CREATED" = true ]; then
-                userdel hghub 2>/dev/null || true
+                userdel hub 2>/dev/null || true
             fi
 
             # Remove temp files
-            rm -f /tmp/hg_hub.tar.gz
+            rm -f /tmp/hub.tar.gz
 
             echo -e "${GREEN}[OK]${NC} Cleanup complete"
             ;;
@@ -298,10 +298,10 @@ check_prerequisites() {
 
 download_release() {
     # Check for local/dev mode
-    if [ "$LOCAL_INSTALL" = "true" ] || [ -f "$SCRIPT_DIR/../target/release/hg_hub" ]; then
+    if [ "$LOCAL_INSTALL" = "true" ] || [ -f "$SCRIPT_DIR/../target/release/hub" ]; then
         print_header "Local Installation Mode"
 
-        if [ ! -f "$SCRIPT_DIR/../target/release/hg_hub" ]; then
+        if [ ! -f "$SCRIPT_DIR/../target/release/hub" ]; then
             print_error "Binary not found. Build first with: cargo build --release"
             exit 1
         fi
@@ -312,7 +312,7 @@ download_release() {
         return
     fi
 
-    print_header "Downloading HG Hub"
+    print_header "Downloading Hub"
 
     # Setup auth header for private repos
     AUTH_HEADER=""
@@ -359,37 +359,37 @@ download_release() {
     if [ -n "$ASSET_ID" ] && [ -n "$AUTH_HEADER" ]; then
         # Use asset API for private repos
         ASSET_URL="https://api.github.com/repos/${GITHUB_REPO}/releases/assets/${ASSET_ID}"
-        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$ASSET_URL" -o /tmp/hg_hub.tar.gz
+        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$ASSET_URL" -o /tmp/hub.tar.gz
     elif [ -n "$AUTH_HEADER" ]; then
         # Fallback: try browser URL with auth
-        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$DOWNLOAD_URL" -o /tmp/hg_hub.tar.gz
+        curl -LH "$AUTH_HEADER" -H "Accept: application/octet-stream" "$DOWNLOAD_URL" -o /tmp/hub.tar.gz
     else
         # Public repo - direct download
-        curl -L "$DOWNLOAD_URL" -o /tmp/hg_hub.tar.gz
+        curl -L "$DOWNLOAD_URL" -o /tmp/hub.tar.gz
     fi
 
     # Validate the download
-    if [ ! -f /tmp/hg_hub.tar.gz ]; then
+    if [ ! -f /tmp/hub.tar.gz ]; then
         print_error "Download failed - file not created"
         exit 1
     fi
 
-    FILE_SIZE=$(stat -c%s /tmp/hg_hub.tar.gz 2>/dev/null || stat -f%z /tmp/hg_hub.tar.gz 2>/dev/null)
+    FILE_SIZE=$(stat -c%s /tmp/hub.tar.gz 2>/dev/null || stat -f%z /tmp/hub.tar.gz 2>/dev/null)
     if [ "$FILE_SIZE" -lt 1000 ]; then
         print_error "Download failed - file too small (${FILE_SIZE} bytes)"
         print_info "This usually means the release asset doesn't exist yet."
         print_info "Check if GitHub Actions completed successfully for version $VERSION"
-        cat /tmp/hg_hub.tar.gz 2>/dev/null  # Show error response
-        rm -f /tmp/hg_hub.tar.gz
+        cat /tmp/hub.tar.gz 2>/dev/null  # Show error response
+        rm -f /tmp/hub.tar.gz
         exit 1
     fi
 
     # Verify it's actually a gzip file
-    if ! gzip -t /tmp/hg_hub.tar.gz 2>/dev/null; then
+    if ! gzip -t /tmp/hub.tar.gz 2>/dev/null; then
         print_error "Downloaded file is not a valid gzip archive"
         print_info "Content received:"
-        head -c 200 /tmp/hg_hub.tar.gz
-        rm -f /tmp/hg_hub.tar.gz
+        head -c 200 /tmp/hub.tar.gz
+        rm -f /tmp/hub.tar.gz
         exit 1
     fi
 
@@ -404,10 +404,10 @@ install_files() {
     print_header "Installing Files"
 
     # Create system user if not exists
-    if ! id "hghub" &>/dev/null; then
-        useradd --system --no-create-home --shell /bin/false hghub
+    if ! id "hub" &>/dev/null; then
+        useradd --system --no-create-home --shell /bin/false hub
         USER_CREATED=true
-        print_success "Created system user 'hghub'"
+        print_success "Created system user 'hub'"
     fi
 
     # Create directory structure
@@ -419,7 +419,7 @@ install_files() {
         print_info "Copying local files..."
 
         # Main binary (includes integrated Discord bot)
-        cp "$SCRIPT_DIR/../target/release/hg_hub" "$INSTALL_DIR/bin/"
+        cp "$SCRIPT_DIR/../target/release/hub" "$INSTALL_DIR/bin/"
 
         # Static files
         cp -r "$SCRIPT_DIR/../static/"* "$INSTALL_DIR/static/"
@@ -430,19 +430,19 @@ install_files() {
     else
         # Extract from downloaded tarball
         print_info "Extracting files..."
-        tar -xzf /tmp/hg_hub.tar.gz -C "$INSTALL_DIR"
+        tar -xzf /tmp/hub.tar.gz -C "$INSTALL_DIR"
 
         # Move binary to correct location
-        if [ -f "$INSTALL_DIR/hg_hub" ]; then
-            mv "$INSTALL_DIR/hg_hub" "$INSTALL_DIR/bin/"
+        if [ -f "$INSTALL_DIR/hub" ]; then
+            mv "$INSTALL_DIR/hub" "$INSTALL_DIR/bin/"
         fi
     fi
 
-    chmod +x "$INSTALL_DIR/bin/hg_hub"
+    chmod +x "$INSTALL_DIR/bin/hub"
     chmod +x "$INSTALL_DIR/deploy/update.sh" 2>/dev/null || true
 
     # Set ownership
-    chown -R hghub:hghub "$INSTALL_DIR"
+    chown -R hub:hub "$INSTALL_DIR"
     chmod 750 "$INSTALL_DIR"
 
     FILES_INSTALLED=true
@@ -458,7 +458,7 @@ configure_application() {
 
     # Server URL
     echo ""
-    echo -n "Enter your server domain (e.g., hg-hub.example.com): "
+    echo -n "Enter your server domain (e.g., hub.example.com): "
     read SERVER_URL < /dev/tty
     while [ -z "$SERVER_URL" ]; do
         print_error "Server URL cannot be empty"
@@ -499,7 +499,7 @@ configure_application() {
     # Create .env file
     print_info "Creating .env configuration..."
     cat > "$INSTALL_DIR/.env" << EOF
-# HG Hub Configuration
+# Hub Configuration
 # Generated by installer on $(date)
 
 DATABASE_URL=sqlite:data/hub.db?mode=rwc
@@ -514,7 +514,7 @@ EOF
         configure_discord_bot
     fi
 
-    chown hghub:hghub "$INSTALL_DIR/.env"
+    chown hub:hub "$INSTALL_DIR/.env"
     chmod 600 "$INSTALL_DIR/.env"
 
     print_success "Configuration saved"
@@ -560,7 +560,7 @@ init_database() {
 
     # Ensure data directory exists and is writable
     mkdir -p "$INSTALL_DIR/data"
-    chown hghub:hghub "$INSTALL_DIR/data"
+    chown hub:hub "$INSTALL_DIR/data"
     chmod 750 "$INSTALL_DIR/data"
 
     # Start server briefly to run migrations
@@ -570,28 +570,28 @@ init_database() {
     cd "$INSTALL_DIR"
 
     # Create a small runner script to ensure correct working directory
-    cat > /tmp/hg_hub_init.sh << 'INITEOF'
+    cat > /tmp/hub_init.sh << 'INITEOF'
 #!/bin/bash
 cd "$1"
-timeout 10 "$1/bin/hg_hub" || true
+timeout 10 "$1/bin/hub" || true
 INITEOF
-    chmod +x /tmp/hg_hub_init.sh
+    chmod +x /tmp/hub_init.sh
 
-    run_as_user hghub /tmp/hg_hub_init.sh "$INSTALL_DIR" &
+    run_as_user hub /tmp/hub_init.sh "$INSTALL_DIR" &
     SERVER_PID=$!
     sleep 3
 
     # Kill the server
     kill $SERVER_PID 2>/dev/null || true
     wait $SERVER_PID 2>/dev/null || true
-    rm -f /tmp/hg_hub_init.sh
+    rm -f /tmp/hub_init.sh
 
     if [ -f "$INSTALL_DIR/data/hub.db" ]; then
         print_success "Database initialized"
     else
         print_error "Database initialization failed"
         print_info "Check permissions on $INSTALL_DIR/data"
-        print_info "Try running manually: cd $INSTALL_DIR && ./bin/hg_hub"
+        print_info "Try running manually: cd $INSTALL_DIR && ./bin/hub"
         exit 1
     fi
 }
@@ -662,7 +662,7 @@ setup_service() {
     print_header "Setting up Systemd Service"
 
     # Copy service file
-    cp "$INSTALL_DIR/deploy/templates/hg-hub.service" "/etc/systemd/system/${SERVICE_NAME}.service"
+    cp "$INSTALL_DIR/deploy/templates/hub.service" "/etc/systemd/system/${SERVICE_NAME}.service"
     SERVICE_CREATED=true
 
     # Reload systemd
@@ -703,13 +703,13 @@ setup_nginx() {
 
     print_header "Setting up Nginx"
 
-    NGINX_CONF="/etc/nginx/sites-available/hg-hub"
-    NGINX_ENABLED="/etc/nginx/sites-enabled/hg-hub"
+    NGINX_CONF="/etc/nginx/sites-available/hub"
+    NGINX_ENABLED="/etc/nginx/sites-enabled/hub"
     BACKUP_DIR="/etc/nginx/backup-$(date +%Y%m%d-%H%M%S)"
 
     # Check if config already exists
     if [ -f "$NGINX_CONF" ]; then
-        print_warning "nginx config for hg-hub already exists!"
+        print_warning "nginx config for hub already exists!"
         echo ""
         echo "Options:"
         echo "  1) Backup and overwrite"
@@ -721,8 +721,8 @@ setup_nginx() {
         case "$nginx_choice" in
             1)
                 mkdir -p "$BACKUP_DIR"
-                cp "$NGINX_CONF" "$BACKUP_DIR/hg-hub.conf.bak"
-                print_info "Backup saved to: $BACKUP_DIR/hg-hub.conf.bak"
+                cp "$NGINX_CONF" "$BACKUP_DIR/hub.conf.bak"
+                print_info "Backup saved to: $BACKUP_DIR/hub.conf.bak"
                 ;;
             2)
                 print_info "Keeping existing nginx config"
@@ -736,7 +736,7 @@ setup_nginx() {
                     return
                 fi
                 mkdir -p "$BACKUP_DIR"
-                cp "$NGINX_CONF" "$BACKUP_DIR/hg-hub.conf.bak"
+                cp "$NGINX_CONF" "$BACKUP_DIR/hub.conf.bak"
                 ;;
             *)
                 return
@@ -759,7 +759,7 @@ setup_nginx() {
         -e "s|{{PORT}}|$PORT|g" \
         "$INSTALL_DIR/deploy/templates/nginx.conf" > "$NGINX_CONF"
 
-    # Enable site (only hg-hub, don't touch other sites)
+    # Enable site (only hub, don't touch other sites)
     ln -sf "$NGINX_CONF" "$NGINX_ENABLED"
 
     # Test config BEFORE reload
@@ -863,9 +863,9 @@ generate_tampermonkey_script() {
         -e "s|{{VERSION}}|$VERSION|g" \
         -e "s|{{API_URL}}|$API_URL|g" \
         -e "s|{{SERVER_HOST}}|$SERVER_HOST|g" \
-        "$INSTALL_DIR/deploy/templates/hg-hub.user.js.template" > "$INSTALL_DIR/static/hg-hub.user.js"
+        "$INSTALL_DIR/deploy/templates/hub.user.js.template" > "$INSTALL_DIR/static/hub.user.js"
 
-    chown hghub:hghub "$INSTALL_DIR/static/hg-hub.user.js"
+    chown hub:hub "$INSTALL_DIR/static/hub.user.js"
 
     print_success "Tampermonkey script generated"
 }
@@ -877,7 +877,7 @@ generate_tampermonkey_script() {
 print_summary() {
     print_header "Installation Complete!"
 
-    echo -e "${GREEN}HG Hub has been installed successfully!${NC}\n"
+    echo -e "${GREEN}Hub has been installed successfully!${NC}\n"
 
     echo "Installation directory: $INSTALL_DIR"
     echo "Service name: $SERVICE_NAME"
@@ -895,7 +895,7 @@ print_summary() {
 
     echo "Next steps:"
     echo "  1. Install the Tampermonkey script in your browser:"
-    echo "     ${API_URL}/static/hg-hub.user.js"
+    echo "     ${API_URL}/static/hub.user.js"
     echo ""
     echo "  2. Open Tampermonkey settings and add your API key"
     echo ""
@@ -914,8 +914,8 @@ print_summary() {
 # ============================================================================
 
 main() {
-    print_header "HG Hub Installer"
-    echo "This script will install HG Hub on your server."
+    print_header "Hub Installer"
+    echo "This script will install Hub on your server."
     echo ""
 
     if ! ask_yes_no "Continue with installation?" "y"; then
