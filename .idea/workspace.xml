@@ -11,7 +11,9 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b488cf30-d80a-42f3-bdbb-3384e884baeb" name="Changes" comment="" />
+    <list default="true" id="b488cf30-d80a-42f3-bdbb-3384e884baeb" name="Changes" comment="First working version">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,12 +29,12 @@
     &quot;assignee&quot;: &quot;Lockerflockig&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Lockerflockig/hg_hub.git&quot;,
-    &quot;accountId&quot;: &quot;dc79b005-fa51-48f1-a5da-844ab8786ba0&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Lockerflockig/hub.git",
+    "accountId": "dc79b005-fa51-48f1-a5da-844ab8786ba0"
   }
-}</component>
+}]]></component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="qHt1p7qX" />
   </component>
@@ -53,6 +55,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.rust.reset.selective.auto.import": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/Users/Till/RustroverProjects/hub",
     "node.js.detected.package.eslint": "true",
@@ -138,11 +141,24 @@
       <option name="presentableId" value="Default" />
       <updated>1767931777531</updated>
       <workItem from="1767931778674" duration="360000" />
-      <workItem from="1767932202909" duration="565000" />
+      <workItem from="1767932202909" duration="1173000" />
     </task>
+    <task id="LOCAL-00001" summary="First working version">
+      <option name="closed" value="true" />
+      <created>1767933054667</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1767933054667</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First working version" />
+    <option name="LAST_COMMIT_MESSAGE" value="First working version" />
   </component>
 </project>
