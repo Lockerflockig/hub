@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "-- Zählt feindliche Spionageberichte für Pagination\nSELECT COUNT(*) as total\nFROM hostile_spying\nWHERE (? IS NULL OR attacker_coordinates LIKE '%' || ? || '%' OR target_coordinates LIKE '%' || ? || '%');\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "total",
+        "ordinal": 0,
+        "type_info": "Integer"
+      }
+    ],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "ff881b1913e5107b5f9d6a1e079df9350c76a9703719241428c1ae02cf2bc1d6"
+}

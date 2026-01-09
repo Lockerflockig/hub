@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE planets\nSET defense = ?, updated_at = CURRENT_TIMESTAMP\nWHERE coordinates = ? AND type = ?;\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "aa6fd349076e0eabde4b2a987add7467ea189fe2a57eaed486b8f24fae9ac1cf"
+}
