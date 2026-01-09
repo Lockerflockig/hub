@@ -4,7 +4,7 @@
 
 ```bash
 # Automatische Installation (nach erstem Release)
-curl -sL https://raw.githubusercontent.com/Lockerflockig/hub/main/deploy/install.sh | sudo bash
+curl -sL https://raw.githubusercontent.com/Lockerflockig/hg_hub/main/deploy/install.sh | sudo bash
 
 # Lokale Installation (Entwicklung)
 cargo build --release
