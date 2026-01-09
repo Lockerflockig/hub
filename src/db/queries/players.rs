@@ -1,32 +1,12 @@
 use crate::db::models::{PlanetRow, PlayerRow, PlayerScoreRow, PlayerWithAlliance};
 use crate::get_pool;
+use super::sql;
 use tracing::debug;
 
-pub async fn  get_by_id(player_id: i64) -> Result<Option<PlayerWithAlliance>, sqlx::Error> {
+pub async fn get_by_id(player_id: i64) -> Result<Option<PlayerWithAlliance>, sqlx::Error> {
     debug!(player_id, "DB: get_by_id");
     let pool = get_pool().await;
-    sqlx::query_as::<_, PlayerWithAlliance>(
-        r#"SELECT
-            p.id, p.name, p.alliance_id, p.main_coordinates, p.is_deleted,
-            p.inactive_since, p.vacation_since, p.research, p.scores,
-            p.combats_total, p.combats_won, p.combats_draw, p.combats_lost,
-            p.units_shot, p.units_lost, p.notice, p.status, p.created_at, p.updated_at,
-            a.name as alliance_name, a.tag as alliance_tag,
-            p.score_buildings, p.score_buildings_rank,
-            p.score_research, p.score_research_rank,
-            p.score_fleet, p.score_fleet_rank,
-            p.score_defense, p.score_defense_rank,
-            p.score_total, p.score_total_rank,
-            p.honorpoints, p.honorpoints_rank,
-            p.fights_honorable, p.fights_dishonorable, p.fights_neutral,
-            p.destruction_units_killed, p.destruction_units_lost,
-            p.destruction_recycled_metal, p.destruction_recycled_crystal,
-            p.real_destruction_units_killed, p.real_destruction_units_lost,
-            p.real_destruction_recycled_metal, p.real_destruction_recycled_crystal
-        FROM players p
-        LEFT JOIN alliances a ON p.alliance_id = a.id
-        WHERE p.id = ?"#
-    )
+    sqlx::query_as::<_, PlayerWithAlliance>(sql!(players, get_by_id))
         .bind(player_id)
         .fetch_optional(pool)
         .await
@@ -35,28 +15,7 @@ pub async fn  get_by_id(player_id: i64) -> Result<Option<PlayerWithAlliance>, sq
 pub async fn get_by_name(name: &str) -> Result<Option<PlayerWithAlliance>, sqlx::Error> {
     debug!(name, "DB: get_by_name");
     let pool = get_pool().await;
-    sqlx::query_as::<_, PlayerWithAlliance>(
-        r#"SELECT
-            p.id, p.name, p.alliance_id, p.main_coordinates, p.is_deleted,
-            p.inactive_since, p.vacation_since, p.research, p.scores,
-            p.combats_total, p.combats_won, p.combats_draw, p.combats_lost,
-            p.units_shot, p.units_lost, p.notice, p.status, p.created_at, p.updated_at,
-            a.name as alliance_name, a.tag as alliance_tag,
-            p.score_buildings, p.score_buildings_rank,
-            p.score_research, p.score_research_rank,
-            p.score_fleet, p.score_fleet_rank,
-            p.score_defense, p.score_defense_rank,
-            p.score_total, p.score_total_rank,
-            p.honorpoints, p.honorpoints_rank,
-            p.fights_honorable, p.fights_dishonorable, p.fights_neutral,
-            p.destruction_units_killed, p.destruction_units_lost,
-            p.destruction_recycled_metal, p.destruction_recycled_crystal,
-            p.real_destruction_units_killed, p.real_destruction_units_lost,
-            p.real_destruction_recycled_metal, p.real_destruction_recycled_crystal
-        FROM players p
-        LEFT JOIN alliances a ON p.alliance_id = a.id
-        WHERE LOWER(p.name) = LOWER(?)"#
-    )
+    sqlx::query_as::<_, PlayerWithAlliance>(sql!(players, get_by_name))
         .bind(name)
         .fetch_optional(pool)
         .await
@@ -65,14 +24,7 @@ pub async fn get_by_name(name: &str) -> Result<Option<PlayerWithAlliance>, sqlx:
 pub async fn get_planets(player_id: i64) -> Result<Vec<PlanetRow>, sqlx::Error> {
     debug!(player_id, "DB: get_planets");
     let pool = get_pool().await;
-    sqlx::query_as::<_, PlanetRow>(
-        "SELECT id, name, player_id, coordinates, galaxy, system, planet,
-                type, buildings, fleet, defense, resources, prod_h,
-                status, created_at, updated_at
-         FROM planets
-         WHERE player_id = ?
-         ORDER BY galaxy, system, planet"
-    )
+    sqlx::query_as::<_, PlanetRow>(sql!(players, get_player_planets))
         .bind(player_id)
         .fetch_all(pool)
         .await
@@ -81,7 +33,8 @@ pub async fn get_planets(player_id: i64) -> Result<Vec<PlanetRow>, sqlx::Error> 
 pub async fn get_chart(player_id: i64) -> Result<Vec<PlayerScoreRow>, sqlx::Error> {
     debug!(player_id, "DB: get_chart");
     let pool = get_pool().await;
-    sqlx::query_file_as!(PlayerScoreRow, "queries/players/get_chart.sql", player_id)
+    sqlx::query_as::<_, PlayerScoreRow>(sql!(players, get_chart))
+        .bind(player_id)
         .fetch_all(pool)
         .await
 }
@@ -89,7 +42,8 @@ pub async fn get_chart(player_id: i64) -> Result<Vec<PlayerScoreRow>, sqlx::Erro
 pub async fn get_chart_7days(player_id: i64) -> Result<Vec<PlayerScoreRow>, sqlx::Error> {
     debug!(player_id, "DB: get_chart_7days");
     let pool = get_pool().await;
-    sqlx::query_file_as!(PlayerScoreRow, "queries/players/get_chart_7days.sql", player_id)
+    sqlx::query_as::<_, PlayerScoreRow>(sql!(players, get_chart_7days))
+        .bind(player_id)
         .fetch_all(pool)
         .await
 }
@@ -103,14 +57,12 @@ pub async fn upsert(
 ) -> Result<(), sqlx::Error> {
     debug!(id, name, ?alliance_id, "DB: upsert player");
     let pool = get_pool().await;
-    sqlx::query_file!(
-        "queries/players/upsert.sql",
-        id,
-        name,
-        alliance_id,
-        main_coordinates,
-        notice
-    )
+    sqlx::query(sql!(players, upsert))
+        .bind(id)
+        .bind(name)
+        .bind(alliance_id)
+        .bind(main_coordinates)
+        .bind(notice)
         .execute(pool)
         .await?;
     Ok(())
@@ -120,57 +72,7 @@ pub async fn upsert(
 pub async fn upsert_full(req: &crate::api::handlers::players::UpsertPlayerRequest) -> Result<(), sqlx::Error> {
     debug!(req.id, req.name, "DB: upsert_full player");
     let pool = get_pool().await;
-    // Use COALESCE for NOT NULL combat columns to handle null values from frontend
-    sqlx::query(
-        r#"INSERT INTO players (
-            id, name, alliance_id, main_coordinates, notice,
-            score_buildings, score_buildings_rank,
-            score_research, score_research_rank,
-            score_fleet, score_fleet_rank,
-            score_defense, score_defense_rank,
-            score_total, score_total_rank,
-            combats_won, combats_draw, combats_lost, combats_total,
-            honorpoints, honorpoints_rank,
-            fights_honorable, fights_dishonorable, fights_neutral,
-            destruction_units_killed, destruction_units_lost,
-            destruction_recycled_metal, destruction_recycled_crystal,
-            real_destruction_units_killed, real_destruction_units_lost,
-            real_destruction_recycled_metal, real_destruction_recycled_crystal
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE(?, 0), COALESCE(?, 0), COALESCE(?, 0), COALESCE(?, 0), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(id) DO UPDATE SET
-            name = excluded.name,
-            alliance_id = excluded.alliance_id,
-            main_coordinates = excluded.main_coordinates,
-            notice = excluded.notice,
-            score_buildings = excluded.score_buildings,
-            score_buildings_rank = excluded.score_buildings_rank,
-            score_research = excluded.score_research,
-            score_research_rank = excluded.score_research_rank,
-            score_fleet = excluded.score_fleet,
-            score_fleet_rank = excluded.score_fleet_rank,
-            score_defense = excluded.score_defense,
-            score_defense_rank = excluded.score_defense_rank,
-            score_total = excluded.score_total,
-            score_total_rank = excluded.score_total_rank,
-            combats_won = excluded.combats_won,
-            combats_draw = excluded.combats_draw,
-            combats_lost = excluded.combats_lost,
-            combats_total = excluded.combats_total,
-            honorpoints = excluded.honorpoints,
-            honorpoints_rank = excluded.honorpoints_rank,
-            fights_honorable = excluded.fights_honorable,
-            fights_dishonorable = excluded.fights_dishonorable,
-            fights_neutral = excluded.fights_neutral,
-            destruction_units_killed = excluded.destruction_units_killed,
-            destruction_units_lost = excluded.destruction_units_lost,
-            destruction_recycled_metal = excluded.destruction_recycled_metal,
-            destruction_recycled_crystal = excluded.destruction_recycled_crystal,
-            real_destruction_units_killed = excluded.real_destruction_units_killed,
-            real_destruction_units_lost = excluded.real_destruction_units_lost,
-            real_destruction_recycled_metal = excluded.real_destruction_recycled_metal,
-            real_destruction_recycled_crystal = excluded.real_destruction_recycled_crystal,
-            updated_at = CURRENT_TIMESTAMP"#
-    )
+    sqlx::query(sql!(players, upsert_full))
         .bind(req.id)
         .bind(&req.name)
         .bind(req.alliance_id)
@@ -212,9 +114,7 @@ pub async fn upsert_full(req: &crate::api::handlers::players::UpsertPlayerReques
 pub async fn ensure_exists(id: i64, name: &str) -> Result<(), sqlx::Error> {
     debug!(id, name, "DB: ensure_exists player");
     let pool = get_pool().await;
-    sqlx::query(
-        "INSERT INTO players (id, name) VALUES (?, ?) ON CONFLICT(id) DO NOTHING"
-    )
+    sqlx::query(sql!(players, ensure_exists))
         .bind(id)
         .bind(name)
         .execute(pool)
@@ -225,11 +125,9 @@ pub async fn ensure_exists(id: i64, name: &str) -> Result<(), sqlx::Error> {
 pub async fn update_research(player_id: i64, research_json: &str) -> Result<(), sqlx::Error> {
     debug!(player_id, "DB: update_research");
     let pool = get_pool().await;
-    sqlx::query_file!(
-        "queries/players/update_research.sql",
-        research_json,
-        player_id
-    )
+    sqlx::query(sql!(players, update_research))
+        .bind(research_json)
+        .bind(player_id)
         .execute(pool)
         .await?;
     Ok(())
@@ -238,11 +136,7 @@ pub async fn update_research(player_id: i64, research_json: &str) -> Result<(), 
 pub async fn update_alliance(player_id: i64, alliance_id: i64) -> Result<(), sqlx::Error> {
     debug!(player_id, alliance_id, "DB: update_alliance");
     let pool = get_pool().await;
-    // Only update if alliance exists (foreign key constraint)
-    sqlx::query(
-        "UPDATE players SET alliance_id = ?, updated_at = CURRENT_TIMESTAMP
-         WHERE id = ? AND EXISTS (SELECT 1 FROM alliances WHERE id = ?)"
-    )
+    sqlx::query(sql!(players, update_alliance))
         .bind(alliance_id)
         .bind(player_id)
         .bind(alliance_id)
@@ -254,7 +148,8 @@ pub async fn update_alliance(player_id: i64, alliance_id: i64) -> Result<(), sql
 pub async fn mark_deleted(player_id: i64) -> Result<(), sqlx::Error> {
     debug!(player_id, "DB: mark_deleted");
     let pool = get_pool().await;
-    sqlx::query_file!("queries/players/mark_deleted.sql", player_id)
+    sqlx::query(sql!(players, mark_deleted))
+        .bind(player_id)
         .execute(pool)
         .await?;
     Ok(())
@@ -304,15 +199,23 @@ pub async fn upsert_stats(stats: &[PlayerStats]) -> Result<u64, sqlx::Error> {
         );
 
         // Update player
-        sqlx::query_file!("queries/players/upsert_stats.sql", s.id, s.name, s.alliance_id, scores_json)
+        sqlx::query(sql!(players, upsert_stats))
+            .bind(s.id)
+            .bind(&s.name)
+            .bind(s.alliance_id)
+            .bind(&scores_json)
             .execute(pool)
             .await?;
 
         // Insert score history
-        sqlx::query_file!(
-            "queries/players/insert_score.sql",
-            s.id, s.score_total, s.score_economy, s.score_research, s.score_military, s.score_defense, s.rank
-        )
+        sqlx::query(sql!(players, insert_score))
+            .bind(s.id)
+            .bind(s.score_total)
+            .bind(s.score_economy)
+            .bind(s.score_research)
+            .bind(s.score_military)
+            .bind(s.score_defense)
+            .bind(s.rank)
             .execute(pool)
             .await?;
 

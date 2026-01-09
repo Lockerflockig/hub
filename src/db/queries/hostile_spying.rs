@@ -1,5 +1,6 @@
 use crate::db::models::{HostileSpyingRow, HostileSpyingOverviewRow};
 use crate::get_pool;
+use super::sql;
 use tracing::debug;
 
 pub async fn upsert(
@@ -10,10 +11,11 @@ pub async fn upsert(
 ) -> Result<(), sqlx::Error> {
     debug!(external_id, ?attacker_coordinates, ?target_coordinates, "DB: hostile_spying::upsert");
     let pool = get_pool().await;
-    sqlx::query_file!(
-        "queries/hostile_spying/upsert.sql",
-        external_id, attacker_coordinates, target_coordinates, report_time
-    )
+    sqlx::query(sql!(hostile_spying, upsert))
+        .bind(external_id)
+        .bind(attacker_coordinates)
+        .bind(target_coordinates)
+        .bind(report_time)
         .execute(pool)
         .await?;
     Ok(())
@@ -26,11 +28,12 @@ pub async fn get(
 ) -> Result<Vec<HostileSpyingRow>, sqlx::Error> {
     debug!(?search, limit, offset, "DB: hostile_spying::get");
     let pool = get_pool().await;
-    sqlx::query_file_as!(
-        HostileSpyingRow,
-        "queries/hostile_spying/get.sql",
-        search, search, search, limit, offset
-    )
+    sqlx::query_as::<_, HostileSpyingRow>(sql!(hostile_spying, get))
+        .bind(search)
+        .bind(search)
+        .bind(search)
+        .bind(limit)
+        .bind(offset)
         .fetch_all(pool)
         .await
 }
@@ -44,11 +47,10 @@ pub async fn count(search: Option<&str>) -> Result<i64, sqlx::Error> {
         total: i64,
     }
 
-    let result = sqlx::query_file_as!(
-        CountResult,
-        "queries/hostile_spying/count.sql",
-        search, search, search
-    )
+    let result = sqlx::query_as::<_, CountResult>(sql!(hostile_spying, count))
+        .bind(search)
+        .bind(search)
+        .bind(search)
         .fetch_one(pool)
         .await?;
 
@@ -69,15 +71,18 @@ pub async fn get_overview(
         limit, offset, "DB: hostile_spying::get_overview"
     );
     let pool = get_pool().await;
-    sqlx::query_file_as!(
-        HostileSpyingOverviewRow,
-        "queries/hostile_spying/get_overview.sql",
-        attacker_filter, attacker_filter, attacker_filter,
-        target_filter, target_filter,
-        time_from, time_from,
-        time_to, time_to,
-        limit, offset
-    )
+    sqlx::query_as::<_, HostileSpyingOverviewRow>(sql!(hostile_spying, get_overview))
+        .bind(attacker_filter)
+        .bind(attacker_filter)
+        .bind(attacker_filter)
+        .bind(target_filter)
+        .bind(target_filter)
+        .bind(time_from)
+        .bind(time_from)
+        .bind(time_to)
+        .bind(time_to)
+        .bind(limit)
+        .bind(offset)
         .fetch_all(pool)
         .await
 }
@@ -100,14 +105,16 @@ pub async fn count_overview(
         total: i64,
     }
 
-    let result = sqlx::query_file_as!(
-        CountResult,
-        "queries/hostile_spying/count_overview.sql",
-        attacker_filter, attacker_filter, attacker_filter,
-        target_filter, target_filter,
-        time_from, time_from,
-        time_to, time_to
-    )
+    let result = sqlx::query_as::<_, CountResult>(sql!(hostile_spying, count_overview))
+        .bind(attacker_filter)
+        .bind(attacker_filter)
+        .bind(attacker_filter)
+        .bind(target_filter)
+        .bind(target_filter)
+        .bind(time_from)
+        .bind(time_from)
+        .bind(time_to)
+        .bind(time_to)
         .fetch_one(pool)
         .await?;
 

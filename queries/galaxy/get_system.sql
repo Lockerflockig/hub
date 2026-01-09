@@ -1,21 +1,6 @@
--- Query für GET /api/galaxy/{galaxy}/{system}
-SELECT
-    id AS "id!",
-    external_id,
-    player_id AS "player_id!",
-    coordinates AS "coordinates!",
-    galaxy AS "galaxy!",
-    system AS "system!",
-    planet AS "planet!",
-    type,
-    buildings,
-    fleet,
-    defense,
-    resources,
-    prod_h,
-    status,
-    created_at,
-    updated_at
+SELECT id, name, player_id, coordinates, galaxy, system, planet,
+       type, planet_id, buildings, fleet, defense, resources, prod_h,
+       status, created_at, updated_at
 FROM planets
-WHERE galaxy = ? AND system = ?
-ORDER BY planet, type;
+WHERE galaxy = ? AND system = ? AND planet > 0 AND (status IS NULL OR status != 'deleted')
+ORDER BY planet, type

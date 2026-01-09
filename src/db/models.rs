@@ -44,7 +44,7 @@ impl UserRole {
 }
 
 /// User row for admin list view (without api_key for security)
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, FromRow)]
 pub struct UserListRow {
     pub id: i64,
     pub player_id: Option<i64>,
@@ -62,7 +62,7 @@ pub struct UserListRow {
 // Core Tables
 // ============================================================================
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, FromRow)]
 pub struct UserRow {
     pub id: i64,
     pub api_key: String,

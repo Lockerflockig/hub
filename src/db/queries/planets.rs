@@ -1,4 +1,5 @@
 use crate::get_pool;
+use super::sql;
 use tracing::debug;
 
 pub async fn upsert(
@@ -13,15 +14,7 @@ pub async fn upsert(
 ) -> Result<(), sqlx::Error> {
     debug!(player_id, coordinates, ?name, ?pr0_planet_id, "DB: upsert planet");
     let pool = get_pool().await;
-    sqlx::query(
-        "INSERT INTO planets (name, player_id, coordinates, galaxy, system, planet, type, planet_id)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-         ON CONFLICT(coordinates, type) DO UPDATE SET
-             name = excluded.name,
-             player_id = excluded.player_id,
-             planet_id = COALESCE(excluded.planet_id, planets.planet_id),
-             updated_at = CURRENT_TIMESTAMP"
-    )
+    sqlx::query(sql!(planets, upsert_galaxy))
         .bind(name)
         .bind(player_id)
         .bind(coordinates)
@@ -38,7 +31,10 @@ pub async fn upsert(
 pub async fn update_buildings(coordinates: &str, planet_type: &str, buildings_json: &str) -> Result<(), sqlx::Error> {
     debug!(coordinates, planet_type, "DB: update_buildings");
     let pool = get_pool().await;
-    sqlx::query_file!("queries/planets/update_buildings.sql", buildings_json, coordinates, planet_type)
+    sqlx::query(sql!(planets, update_buildings))
+        .bind(buildings_json)
+        .bind(coordinates)
+        .bind(planet_type)
         .execute(pool)
         .await?;
     Ok(())
@@ -47,7 +43,10 @@ pub async fn update_buildings(coordinates: &str, planet_type: &str, buildings_js
 pub async fn update_fleet(coordinates: &str, planet_type: &str, fleet_json: &str) -> Result<(), sqlx::Error> {
     debug!(coordinates, planet_type, "DB: update_fleet");
     let pool = get_pool().await;
-    sqlx::query_file!("queries/planets/update_fleet.sql", fleet_json, coordinates, planet_type)
+    sqlx::query(sql!(planets, update_fleet))
+        .bind(fleet_json)
+        .bind(coordinates)
+        .bind(planet_type)
         .execute(pool)
         .await?;
     Ok(())
@@ -56,7 +55,10 @@ pub async fn update_fleet(coordinates: &str, planet_type: &str, fleet_json: &str
 pub async fn update_defense(coordinates: &str, planet_type: &str, defense_json: &str) -> Result<(), sqlx::Error> {
     debug!(coordinates, planet_type, "DB: update_defense");
     let pool = get_pool().await;
-    sqlx::query_file!("queries/planets/update_defense.sql", defense_json, coordinates, planet_type)
+    sqlx::query(sql!(planets, update_defense))
+        .bind(defense_json)
+        .bind(coordinates)
+        .bind(planet_type)
         .execute(pool)
         .await?;
     Ok(())
@@ -65,7 +67,10 @@ pub async fn update_defense(coordinates: &str, planet_type: &str, defense_json: 
 pub async fn update_resources(coordinates: &str, planet_type: &str, resources_json: &str) -> Result<(), sqlx::Error> {
     debug!(coordinates, planet_type, "DB: update_resources");
     let pool = get_pool().await;
-    sqlx::query_file!("queries/planets/update_resources.sql", resources_json, coordinates, planet_type)
+    sqlx::query(sql!(planets, update_resources))
+        .bind(resources_json)
+        .bind(coordinates)
+        .bind(planet_type)
         .execute(pool)
         .await?;
     Ok(())
@@ -74,7 +79,7 @@ pub async fn update_resources(coordinates: &str, planet_type: &str, resources_js
 pub async fn mark_deleted(coordinates: &str, planet_type: &str) -> Result<(), sqlx::Error> {
     debug!(coordinates, planet_type, "DB: mark_deleted planet");
     let pool = get_pool().await;
-    sqlx::query("UPDATE planets SET status = 'deleted', updated_at = CURRENT_TIMESTAMP WHERE coordinates = ? AND type = ?")
+    sqlx::query(sql!(planets, mark_deleted))
         .bind(coordinates)
         .bind(planet_type)
         .execute(pool)
@@ -109,33 +114,7 @@ pub async fn upsert_empire(
     let fleet_json = serde_json::to_string(fleet).unwrap_or_default();
     let defense_json = serde_json::to_string(defense).unwrap_or_default();
 
-    sqlx::query(
-        r#"INSERT INTO planets (
-            planet_id, player_id, name, coordinates, galaxy, system, planet, type,
-            fields_used, fields_max, temperature, points,
-            metal_prod_h, crystal_prod_h, deut_prod_h, energy_used, energy_max,
-            resources, buildings, fleet, defense, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'PLANET', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'seen')
-        ON CONFLICT(coordinates, type) DO UPDATE SET
-            planet_id = excluded.planet_id,
-            player_id = excluded.player_id,
-            name = excluded.name,
-            fields_used = excluded.fields_used,
-            fields_max = excluded.fields_max,
-            temperature = excluded.temperature,
-            points = excluded.points,
-            metal_prod_h = excluded.metal_prod_h,
-            crystal_prod_h = excluded.crystal_prod_h,
-            deut_prod_h = excluded.deut_prod_h,
-            energy_used = excluded.energy_used,
-            energy_max = excluded.energy_max,
-            resources = excluded.resources,
-            buildings = excluded.buildings,
-            fleet = excluded.fleet,
-            defense = excluded.defense,
-            status = 'seen',
-            updated_at = CURRENT_TIMESTAMP"#
-    )
+    sqlx::query(sql!(planets, upsert_empire))
         .bind(pr0_planet_id)
         .bind(player_id)
         .bind(name)

@@ -1,0 +1,1 @@
+SELECT id FROM players WHERE LOWER(name) = LOWER(?) LIMIT 1

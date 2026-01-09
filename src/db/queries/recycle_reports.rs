@@ -1,4 +1,5 @@
 use crate::get_pool;
+use super::sql;
 use tracing::debug;
 
 pub async fn upsert(
@@ -16,12 +17,18 @@ pub async fn upsert(
     debug!(external_id, galaxy, system, planet, "DB: recycle_reports::upsert");
     let pool = get_pool().await;
     let coords = format!("{}:{}:{}", galaxy, system, planet);
-    sqlx::query_file!(
-        "queries/recycle_reports/upsert.sql",
-        external_id, coords, galaxy, system, planet,
-        metal, crystal, metal_tf, crystal_tf,
-        report_time, reported_by
-    )
+    sqlx::query(sql!(recycle_reports, upsert))
+        .bind(external_id)
+        .bind(&coords)
+        .bind(galaxy)
+        .bind(system)
+        .bind(planet)
+        .bind(metal)
+        .bind(crystal)
+        .bind(metal_tf)
+        .bind(crystal_tf)
+        .bind(report_time)
+        .bind(reported_by)
         .execute(pool)
         .await?;
     Ok(())

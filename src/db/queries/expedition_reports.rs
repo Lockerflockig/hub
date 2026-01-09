@@ -1,4 +1,5 @@
 use crate::get_pool;
+use super::sql;
 use tracing::debug;
 
 pub async fn upsert(
@@ -12,11 +13,14 @@ pub async fn upsert(
 ) -> Result<(), sqlx::Error> {
     debug!(external_id, ?expedition_type, "DB: expedition_reports::upsert");
     let pool = get_pool().await;
-    sqlx::query_file!(
-        "queries/expedition_reports/upsert.sql",
-        external_id, message, expedition_type, resources, fleet,
-        report_time, reported_by
-    )
+    sqlx::query(sql!(expedition_reports, upsert))
+        .bind(external_id)
+        .bind(message)
+        .bind(expedition_type)
+        .bind(resources)
+        .bind(fleet)
+        .bind(report_time)
+        .bind(reported_by)
         .execute(pool)
         .await?;
     Ok(())

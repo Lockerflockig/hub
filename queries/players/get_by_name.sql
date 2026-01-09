@@ -17,4 +17,4 @@ SELECT
     p.real_destruction_recycled_metal, p.real_destruction_recycled_crystal
 FROM players p
 LEFT JOIN alliances a ON p.alliance_id = a.id
-WHERE p.id = ?
+WHERE LOWER(p.name) = LOWER(?)
