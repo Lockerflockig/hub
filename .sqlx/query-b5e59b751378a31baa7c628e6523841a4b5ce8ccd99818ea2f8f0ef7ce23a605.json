@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO users (api_key, player_id, alliance_id)\r\nVALUES (?, ?, ?);\r\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 3
+    },
+    "nullable": []
+  },
+  "hash": "b5e59b751378a31baa7c628e6523841a4b5ce8ccd99818ea2f8f0ef7ce23a605"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO player_scores (player_id, score_total, score_economy, score_research, score_military, score_defense, rank_total)\r\nVALUES (?, ?, ?, ?, ?, ?, ?);\r\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 7
+    },
+    "nullable": []
+  },
+  "hash": "3a749c9a6297f908f2b57c9468ce3c8aacc5c648e4238f04bce77d837fe674e2"
+}

@@ -1,0 +1,14 @@
+/target
+bot/target/
+.env
+*.db
+*.db-journal
+
+# Userscript build artifacts
+userscript/node_modules/
+userscript/scripts/dist/
+userscript/package-lock.json
+
+# Frontend build artifacts
+frontend/node_modules/
+static/js/

@@ -1,0 +1,92 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT\r\n    id AS \"id!\",\r\n    player_id AS \"player_id!\",\r\n    score_total,\r\n    score_economy,\r\n    score_research,\r\n    score_military,\r\n    score_defense,\r\n    rank_total,\r\n    rank_economy,\r\n    rank_research,\r\n    rank_military,\r\n    rank_defense,\r\n    recorded_at\r\nFROM player_scores\r\nWHERE player_id = ?\r\n  AND recorded_at >= datetime('now', '-7 days')\r\nORDER BY recorded_at ASC;\r\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "player_id!",
+        "ordinal": 1,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_total",
+        "ordinal": 2,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_economy",
+        "ordinal": 3,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_research",
+        "ordinal": 4,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_military",
+        "ordinal": 5,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_defense",
+        "ordinal": 6,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_total",
+        "ordinal": 7,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_economy",
+        "ordinal": 8,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_research",
+        "ordinal": 9,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_military",
+        "ordinal": 10,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_defense",
+        "ordinal": 11,
+        "type_info": "Integer"
+      },
+      {
+        "name": "recorded_at",
+        "ordinal": 12,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "706489caa510ca120d4e2ef690b02d9bba7f75dcab1004172eee01a83e5dc6a1"
+}

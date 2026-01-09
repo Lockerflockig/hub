@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE players\r\nSET research = ?, updated_at = CURRENT_TIMESTAMP\r\nWHERE id = ?;\r\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "7e1dba8dffc717c9c455ba5254f59fa62ebdfef67c6a237d94708919d2cf22b8"
+}

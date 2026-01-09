@@ -1,0 +1,68 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT\r\n    id AS \"id!\",\r\n    api_key AS \"api_key!\",\r\n    player_id,\r\n    alliance_id,\r\n    language AS \"language!\",\r\n    role AS \"role!: UserRole\",\r\n    last_activity_at,\r\n    created_at,\r\n    updated_at\r\nFROM users\r\nWHERE TRIM(api_key) = ?;\r\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "api_key!",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "player_id",
+        "ordinal": 2,
+        "type_info": "Integer"
+      },
+      {
+        "name": "alliance_id",
+        "ordinal": 3,
+        "type_info": "Integer"
+      },
+      {
+        "name": "language!",
+        "ordinal": 4,
+        "type_info": "Text"
+      },
+      {
+        "name": "role!: UserRole",
+        "ordinal": 5,
+        "type_info": "Text"
+      },
+      {
+        "name": "last_activity_at",
+        "ordinal": 6,
+        "type_info": "Text"
+      },
+      {
+        "name": "created_at",
+        "ordinal": 7,
+        "type_info": "Text"
+      },
+      {
+        "name": "updated_at",
+        "ordinal": 8,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "0b9f8ed42311c47048404df38a37bc26f0713876efde94fdcd83277645e207c8"
+}

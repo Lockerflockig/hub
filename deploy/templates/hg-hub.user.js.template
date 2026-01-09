@@ -1,0 +1,40 @@
+// ==UserScript==
+// @name         HG Hub
+// @namespace    {{API_URL}}
+// @version      {{VERSION}}
+// @description  Alliance Hub for pr0game
+// @author       HG Alliance
+// @match        https://{{GAME_URL}}/game.php*
+// @match        https://www.{{GAME_URL}}/game.php*
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
+// @icon         https://pr0game.com/favicon.ico
+// @connect      {{SERVER_HOST}}
+// @connect      *
+// ==/UserScript==
+
+$(function() {
+    const apiUrl = '{{API_URL}}';
+    const version = '{{VERSION}}';
+
+    unsafeWindow.HG_HUB = {
+        apiUrl: apiUrl,
+        version: version,
+        setValue: (key, value) => GM_setValue(key, value),
+        getValue: (key, def) => GM_getValue(key, def),
+        request: (opts) => new Promise((resolve, reject) => {
+            GM_xmlhttpRequest({
+                method: opts.method || 'GET',
+                url: opts.url,
+                headers: opts.headers || {},
+                data: opts.data ? JSON.stringify(opts.data) : undefined,
+                onload: (r) => resolve({ status: r.status, data: r.responseText, json: () => { try { return JSON.parse(r.responseText); } catch { return null; } } }),
+                onerror: reject
+            });
+        })
+    };
+
+    $('head').append('<script src="' + apiUrl + '/static/js/hg-hub.js?v=' + version + '"></script>');
+});

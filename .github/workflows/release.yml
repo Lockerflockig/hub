@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build Linux Binary
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      - name: Build Backend (Release)
+        env:
+          SQLX_OFFLINE: true
+        run: cargo build --release
+
+      - name: Prepare Release Package
+        run: |
+          mkdir -p release/static
+
+          # Main binary (includes integrated Discord bot)
+          cp target/release/hg_hub release/
+
+          # Static files
+          cp -r static/* release/static/
+
+          # Deploy scripts and templates
+          cp -r deploy release/
+
+          # Version file
+          echo "${{ github.ref_name }}" > release/version.txt
+
+          # Create tarball
+          tar -czf hg_hub-${{ github.ref_name }}-linux-x64.tar.gz -C release .
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: hg_hub-${{ github.ref_name }}-linux-x64.tar.gz
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

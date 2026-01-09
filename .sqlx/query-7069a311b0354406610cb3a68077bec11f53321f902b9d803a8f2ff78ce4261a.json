@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO players (id, name, alliance_id, main_coordinates, notice)\r\nVALUES (?, ?, ?, ?, ?)\r\n    ON CONFLICT(id) DO UPDATE SET\r\n    name = excluded.name,\r\n                           alliance_id = excluded.alliance_id,\r\n                           main_coordinates = excluded.main_coordinates,\r\n                           notice = excluded.notice,\r\n                           updated_at = CURRENT_TIMESTAMP;\r\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": []
+  },
+  "hash": "7069a311b0354406610cb3a68077bec11f53321f902b9d803a8f2ff78ce4261a"
+}

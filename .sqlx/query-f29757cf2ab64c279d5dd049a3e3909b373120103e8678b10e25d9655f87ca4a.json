@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT id, stat_type, last_sync_at, synced_by\r\nFROM stat_views;\r\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "stat_type",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "last_sync_at",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "synced_by",
+        "ordinal": 3,
+        "type_info": "Integer"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "f29757cf2ab64c279d5dd049a3e3909b373120103e8678b10e25d9655f87ca4a"
+}

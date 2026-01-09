@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE users\r\nSET last_activity_at = datetime('now'), updated_at = datetime('now')\r\nWHERE id = ?;\r\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "d5089a3172e08a71ce93fa6ca964bb3a1a63791f4ccb77855c38db5104eb7ce2"
+}

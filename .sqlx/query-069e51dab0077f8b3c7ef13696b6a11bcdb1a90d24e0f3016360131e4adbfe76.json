@@ -1,0 +1,92 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT\r\n    ps.id AS \"id!\",\r\n    ps.player_id AS \"player_id!\",\r\n    ps.score_total,\r\n    ps.score_economy,\r\n    ps.score_research,\r\n    ps.score_military,\r\n    ps.score_defense,\r\n    ps.rank_total,\r\n    ps.rank_economy,\r\n    ps.rank_research,\r\n    ps.rank_military,\r\n    ps.rank_defense,\r\n    ps.recorded_at\r\nFROM player_scores ps\r\nJOIN players p ON p.id = ps.player_id\r\nWHERE p.alliance_id = ?\r\n  AND ps.recorded_at >= datetime('now', '-56 days')\r\nORDER BY ps.recorded_at DESC, ps.player_id;\r\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "player_id!",
+        "ordinal": 1,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_total",
+        "ordinal": 2,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_economy",
+        "ordinal": 3,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_research",
+        "ordinal": 4,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_military",
+        "ordinal": 5,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_defense",
+        "ordinal": 6,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_total",
+        "ordinal": 7,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_economy",
+        "ordinal": 8,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_research",
+        "ordinal": 9,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_military",
+        "ordinal": 10,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_defense",
+        "ordinal": 11,
+        "type_info": "Integer"
+      },
+      {
+        "name": "recorded_at",
+        "ordinal": 12,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "069e51dab0077f8b3c7ef13696b6a11bcdb1a90d24e0f3016360131e4adbfe76"
+}
