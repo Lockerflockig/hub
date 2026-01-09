@@ -1,0 +1,38 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT p.id as player_id, p.name as player_name, pl.coordinates, pl.buildings\nFROM players p\n         JOIN planets pl ON pl.player_id = p.id\nWHERE p.alliance_id = ?\n  AND p.is_deleted = 0\n  AND pl.buildings IS NOT NULL;\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "player_id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "player_name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "coordinates",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "buildings",
+        "ordinal": 3,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "a221b1383ae695e0f18ef9bd816a0935033cf656cd9cd8d974313b0837e5c6cf"
+}

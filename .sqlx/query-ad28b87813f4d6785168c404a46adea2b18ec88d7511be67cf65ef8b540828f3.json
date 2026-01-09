@@ -1,0 +1,92 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT\n    ps.id AS \"id!\",\n    ps.player_id AS \"player_id!\",\n    ps.score_total,\n    ps.score_economy,\n    ps.score_research,\n    ps.score_military,\n    ps.score_defense,\n    ps.rank_total,\n    ps.rank_economy,\n    ps.rank_research,\n    ps.rank_military,\n    ps.rank_defense,\n    ps.recorded_at\nFROM player_scores ps\nJOIN players p ON p.id = ps.player_id\nWHERE p.alliance_id = ?\n  AND ps.recorded_at >= datetime('now', '-56 days')\nORDER BY ps.recorded_at DESC, ps.player_id;\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "id!",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "player_id!",
+        "ordinal": 1,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_total",
+        "ordinal": 2,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_economy",
+        "ordinal": 3,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_research",
+        "ordinal": 4,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_military",
+        "ordinal": 5,
+        "type_info": "Integer"
+      },
+      {
+        "name": "score_defense",
+        "ordinal": 6,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_total",
+        "ordinal": 7,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_economy",
+        "ordinal": 8,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_research",
+        "ordinal": 9,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_military",
+        "ordinal": 10,
+        "type_info": "Integer"
+      },
+      {
+        "name": "rank_defense",
+        "ordinal": 11,
+        "type_info": "Integer"
+      },
+      {
+        "name": "recorded_at",
+        "ordinal": 12,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "ad28b87813f4d6785168c404a46adea2b18ec88d7511be67cf65ef8b540828f3"
+}

@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT id, name, research\nFROM players\nWHERE alliance_id = ?\n  AND is_deleted = 0\n;",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "research",
+        "ordinal": 2,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "f5a76558e08e4f08d0e9cbdd56555406a572b5f26fcef7c39318f16c100bf3ff"
+}

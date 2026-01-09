@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO recycle_reports (\n    external_id, coordinates, galaxy, system, planet,\n    metal, crystal, metal_tf, crystal_tf,\n    report_time, reported_by\n) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n    ON CONFLICT(external_id) DO UPDATE SET\n    metal = excluded.metal,\n                                    crystal = excluded.crystal,\n                                    metal_tf = excluded.metal_tf,\n                                    crystal_tf = excluded.crystal_tf,\n                                    report_time = excluded.report_time;\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 11
+    },
+    "nullable": []
+  },
+  "hash": "fb8887d9f75a894231cda9eac626a9356a612dba94ad52c42fe5f883abd7b85c"
+}
