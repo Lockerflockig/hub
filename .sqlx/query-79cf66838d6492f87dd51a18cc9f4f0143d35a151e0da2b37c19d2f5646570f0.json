@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO spy_reports (\n    external_id, coordinates, galaxy, system, planet, type,\n    resources, buildings, research, fleet, defense,\n    reported_by, report_time\n) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n    ON CONFLICT(external_id) DO UPDATE SET\n    resources = excluded.resources,\n                                    buildings = excluded.buildings,\n                                    research = excluded.research,\n                                    fleet = excluded.fleet,\n                                    defense = excluded.defense,\n                                    report_time = excluded.report_time;\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 13
+    },
+    "nullable": []
+  },
+  "hash": "79cf66838d6492f87dd51a18cc9f4f0143d35a151e0da2b37c19d2f5646570f0"
+}

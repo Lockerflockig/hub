@@ -1,0 +1,44 @@
+{
+  "db_name": "SQLite",
+  "query": "SELECT\n    pl.id as player_id,\n    pl.name as player_name,\n    p.coordinates,\n    p.buildings,\n    p.points\nFROM planets p\n         JOIN players pl ON p.player_id = pl.id\nWHERE pl.alliance_id = ?\nORDER BY pl.name, p.galaxy, p.system, p.planet;\n",
+  "describe": {
+    "columns": [
+      {
+        "name": "player_id",
+        "ordinal": 0,
+        "type_info": "Integer"
+      },
+      {
+        "name": "player_name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "coordinates",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "buildings",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "points",
+        "ordinal": 4,
+        "type_info": "Integer"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "4b20cef5642c525ca83c935172e2ed0004ef0efb871a1ed7dd1b07809a6c2532"
+}

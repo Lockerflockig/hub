@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO hostile_spying (\n    external_id, attacker_coordinates, target_coordinates, report_time\n) VALUES (?, ?, ?, ?)\n    ON CONFLICT(external_id) DO UPDATE SET\n    attacker_coordinates = excluded.attacker_coordinates,\n                                    target_coordinates = excluded.target_coordinates,\n                                    report_time = excluded.report_time;\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "504b19985d894615deb6e859a16b4553d4f648ea22608d2a2162010a92b58350"
+}
