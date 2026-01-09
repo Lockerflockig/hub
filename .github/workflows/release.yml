@@ -45,7 +45,7 @@ jobs:
           mkdir -p release/static
 
           # Main binary (includes integrated Discord bot)
-          cp target/release/hg_hub release/
+          cp target/release/hub release/
 
           # Static files
           cp -r static/* release/static/
@@ -57,7 +57,7 @@ jobs:
           echo "${{ github.ref_name }}" > release/version.txt
 
           # Create tarball
-          tar -czf hg_hub-${{ github.ref_name }}-linux-x64.tar.gz -C release .
+          tar -czf hub-${{ github.ref_name }}-linux-x64.tar.gz -C release .
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
