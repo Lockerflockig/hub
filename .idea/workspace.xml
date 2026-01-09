@@ -11,7 +11,7 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b488cf30-d80a-42f3-bdbb-3384e884baeb" name="Changes" comment="First working version">
+    <list default="true" id="b488cf30-d80a-42f3-bdbb-3384e884baeb" name="Changes" comment="fixed release&#10;dir names">
       <change beforePath="$PROJECT_DIR$/.github/workflows/release.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/release.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -141,7 +141,7 @@
       <option name="presentableId" value="Default" />
       <updated>1767931777531</updated>
       <workItem from="1767931778674" duration="360000" />
-      <workItem from="1767932202909" duration="1173000" />
+      <workItem from="1767932202909" duration="1477000" />
     </task>
     <task id="LOCAL-00001" summary="First working version">
       <option name="closed" value="true" />
@@ -151,7 +151,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767933054667</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fixed release&#10;dir names">
+      <option name="closed" value="true" />
+      <created>1767933422464</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1767933422464</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -159,6 +167,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First working version" />
-    <option name="LAST_COMMIT_MESSAGE" value="First working version" />
+    <MESSAGE value="fixed release&#10;dir names" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed release&#10;dir names" />
   </component>
 </project>
