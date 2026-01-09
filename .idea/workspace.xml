@@ -11,7 +11,11 @@
     </cargoProject>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b488cf30-d80a-42f3-bdbb-3384e884baeb" name="Changes" comment="added npm install to release.yml" />
+    <list default="true" id="b488cf30-d80a-42f3-bdbb-3384e884baeb" name="Changes" comment="fixed paths">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deploy/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy/install.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -139,7 +143,7 @@
       <option name="presentableId" value="Default" />
       <updated>1767931777531</updated>
       <workItem from="1767931778674" duration="360000" />
-      <workItem from="1767932202909" duration="4067000" />
+      <workItem from="1767932202909" duration="6154000" />
     </task>
     <task id="LOCAL-00001" summary="First working version">
       <option name="closed" value="true" />
@@ -165,7 +169,23 @@
       <option name="project" value="LOCAL" />
       <updated>1767933732510</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="added npm install to release.yml">
+      <option name="closed" value="true" />
+      <created>1767936429487</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1767936429487</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fixed paths">
+      <option name="closed" value="true" />
+      <created>1767937696447</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1767937696447</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -175,6 +195,7 @@
     <MESSAGE value="First working version" />
     <MESSAGE value="fixed release&#10;dir names" />
     <MESSAGE value="added npm install to release.yml" />
-    <option name="LAST_COMMIT_MESSAGE" value="added npm install to release.yml" />
+    <MESSAGE value="fixed paths" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed paths" />
   </component>
 </project>
